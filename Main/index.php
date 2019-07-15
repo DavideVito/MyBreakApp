@@ -1,4 +1,9 @@
-<?php session_start() ?>
+<?php
+require_once '../API/Classi/Utente.php';
+session_start();
+
+$utente = $_SESSION['Utente'];
+?>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -9,17 +14,24 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">
         <title></title>
-    </head>
-    <body>
-        <h1>Ciao finalmente ci sei</h1>
-        <br>
         <?php 
-            require_once '../API/Classi/Utente.php';
-            
-            var_dump($_SESSION['Utente']);
+        
+        require_once '../API/JS/OttieniJQuery.php';
+        require_once '../API/JS/OttieniMain.php';
         
         ?>
+    </head>
+    <body>
+        <header>Bentoranto <?php echo $utente->getUsername()?></header>
+        <main id="out">
 
-        <h1>In questa pagina verranno visualizzate le cose apposta sia per l'utente che per la paninara</h1>
+            
+        </main>
+        
+        <footer></footer>
+        <script>
+                ottieniPanini(<?php echo $utente->getIdScuola() ?>);
+            </script>
+            
     </body>
 </html>

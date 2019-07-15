@@ -18,10 +18,8 @@
     $esito = $esito[0];
     require_once '../Classi/Utente.php';
     
-    
-    $utente = new Utente($esito['Username'], $esito['IDClasse'], $esito['IDUtente'], $esito['TipoUtente']);
+    $idScuola = $connessione->ottieniScuolaDaClasse($esito['IDClasse']);
+    $utente = new Utente($esito['Username'], $esito['IDClasse'], $esito['IDUtente'], $esito['TipoUtente'], $idScuola);
     $_SESSION['Utente'] = $utente;
-    
     echo 'window.location=window.location.origin+"/MyBreakApp/Main"';
-    echo "Ciao a tutti";
 ?>

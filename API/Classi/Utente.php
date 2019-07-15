@@ -17,29 +17,36 @@ class Utente {
     private $idClasse;
     private $idUtente;
     private $tipoUtente;
+    private $idScuola;
     
-    function __construct($username, $idClasse, $idUtente, $tipoUtente) {
-       $this->username = $username;
-       $this->idClasse = $idClasse;
-       $this->idUtente = $idUtente;
-       $this->tipoUtente = $tipoUtente;
-   }
-   
-   function getUsername() {
-       return $this->username;
-   }
+    function __construct($username, $idClasse, $idUtente, $tipoUtente, $idScuola) {
+        $this->username = $username;
+        $this->idClasse = $idClasse;
+        $this->idUtente = $idUtente;
+        $this->tipoUtente = $tipoUtente;
+        $this->idScuola = $idScuola;
+    }
 
-   function getIdClasse() {
-       return $this->idClasse;
-   }
+    function getUsername() {
+        return $this->username;
+    }
 
-   function getIdUtente() {
-       return $this->idUtente;
-   }
+    function getIdClasse() {
+        return $this->idClasse;
+    }
 
-   function getTipoUtente() {
-       return $this->tipoUtente;
-   }
+    function getIdUtente() {
+        return $this->idUtente;
+    }
+
+    function getTipoUtente() {
+        return $this->tipoUtente;
+    }
+
+    function getIdScuola() {
+        return $this->idScuola;
+    }
+
 
 
 

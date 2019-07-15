@@ -13,7 +13,7 @@ class Connessione {
     public function disconnetti() {
         $this->connessione = null;
     }
-
+    
     public function __construct() {
         try {
             $host = "localhost";
@@ -95,21 +95,16 @@ class Connessione {
         return $ris;
     }
 
-    public function cercaAmico($nomeUtenteAmico) {
-        $sql = "SELECT IDUtente from Utenti where Utenti.NomeUtente = :myUsername";
+    public function ottieniPanini($IDScuola) {
+        $sql = "SELECT * from Panino where Panino.IDScuola = :IDScuola";
 
         $stm = $this->connessione->prepare($sql);
 
-        $stm->bindParam(":myUsername", $nomeUtenteAmico, PDO::PARAM_STR);
+        $stm->bindParam(":IDScuola", $IDScuola, PDO::PARAM_INT);
 
         $stm->execute();
         $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
-        
-        if (empty($ris)) {
-            return -1;
-        }
-        
-        return $ris[0]['IDUtente'];
+        return $ris;
     }
 
     function aggiungiAmico($idAmico, $mioId) {
@@ -136,6 +131,8 @@ class Connessione {
         
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    
 
     /* Query Prova
       SELECT Tabella.NomeUtente, Tabella.ID1, Tabella.ID2
@@ -152,19 +149,17 @@ class Connessione {
       where Tabella.ID2 = 15
      */
 
-    public function inserisciMessaggio($idMandante, $idRicevente, $contenuto) {
-        $sql = "INSERT INTO `Messaggi`(`IDMittente`, `IDDestinatario`, `Contenuto`) VALUES (:mitt,:dest,:cont)";
+    public function ottieniScuolaDaClasse($idClasse) {
+        $sql = "SELECT * from Scuola INNER join Sede using (IDScuola) inner join Classe using (IDSede) inner join Utente using (IDClasse) where Utente.IDClasse = :idClasse";
 
 
         $stm = $this->connessione->prepare($sql);
 
-        $stm->bindParam(":mitt", $idMandante, PDO::PARAM_INT);
-        $stm->bindParam(":dest", $idRicevente, PDO::PARAM_INT);
-        $stm->bindParam(":cont", $contenuto, PDO::PARAM_STR);
+        $stm->bindParam(":idClasse", $idClasse, PDO::PARAM_INT);
 
         $esisto = $stm->execute();
-            
-        return $esisto;
+        $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return $ris[0]['IDScuola'];
     }
 
     public function getMessaggi($mittente, $destinatario) {
