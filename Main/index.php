@@ -19,5 +19,7 @@ and open the template in the editor.
             var_dump($_SESSION['Utente']);
         
         ?>
+
+        <h1>In questa pagina verranno visualizzate le cose apposta sia per l'utente che per la paninara</h1>
     </body>
 </html>

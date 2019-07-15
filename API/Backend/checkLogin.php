@@ -23,6 +23,5 @@
     $_SESSION['Utente'] = $utente;
     
     echo 'window.location=window.location.origin+"/MyBreakApp/Main"';
-    
-    
+    echo "Ciao a tutti";
 ?>
