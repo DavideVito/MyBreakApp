@@ -2,6 +2,8 @@ console.log(window.location.origin + "/MyBreakApp/API/Backend/checkLogin.php")
 let scuolaSelezionata = null;
 let sedeSelezionata = null;
 let classeSelezionata = 1;
+let carrello = [];
+let panini = [];
 
 function ottieniElemento(id) {
     return document.getElementById(id).value;
@@ -26,9 +28,6 @@ function login() {
 
     });
 }
-
-
-
 
 function registrati() {
     let username = ottieniElemento("username");
@@ -55,13 +54,6 @@ function registrati() {
 
 
 }
-
-/*
- * <input type="text" name="nome" id="username" value="" />
-        <input type="text" name="nome" id="password" value="" />
-        <input type="text" name="nome" id="nome" value="" />
-        <input type="text" name="nome" id="cognome" value="" />*/
-
 
 function ottieniScuola() {
     $('#select').find('option').remove().end()
@@ -201,7 +193,7 @@ function ottieniPanini(idScuola)
         success: function(data)
         {
             console.log(data);
-            let panini = JSON.parse(data);
+            panini = JSON.parse(data);
             let out = document.getElementById("out");
             console.log(panini);
             for(let i = 0; i < panini.length; i++)
@@ -216,7 +208,7 @@ function ottieniPanini(idScuola)
                 
                 let buttonPrezzo = document.createElement("button");
                 buttonPrezzo.textContent = "Compra questo panino per solo " + panino.Prezzo + "€";
-                buttonPrezzo.addEventListener("click", ()=>{aggiungiAlCarrello(panino.IDPanino)});
+                buttonPrezzo.addEventListener("click", ()=>{aggiungiAlCarrello(panino);});
 
                 
                 let tagNome = document.createElement("p");
@@ -234,7 +226,35 @@ function ottieniPanini(idScuola)
     });
 }
 
-function aggiungiAlCarrello(idPanino)
+function aggiungiAlCarrello(panino)
 {
-    alert(idPanino);
+    carrello.push(panino);
+}
+
+function compra(idUtente)
+{
+    
+    let newCarrello = [];
+    for(let i = 0; i < carrello.length; i++)
+    {
+        let panino = carrello[i]
+        newCarrello.push({id: panino.IDPanino});
+    }
+    
+    let daMandare = {idUtente: idUtente, panini: newCarrello};
+    
+    $.ajax({
+        url: window.location.origin + "/MyBreakApp/API/Backend/inserisciPanini.php",
+        method: "POST",
+        data: daMandare,
+        success: function(data)
+        {
+            if(data === "tappofrat")
+            {
+                alert("Ciao bellissimo, ma quanto cazzo mangi?");
+            }
+        }
+        
+        
+    });
 }

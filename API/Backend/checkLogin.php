@@ -20,6 +20,15 @@
     
     $idScuola = $connessione->ottieniScuolaDaClasse($esito['IDClasse']);
     $utente = new Utente($esito['Username'], $esito['IDClasse'], $esito['IDUtente'], $esito['TipoUtente'], $idScuola);
+    
     $_SESSION['Utente'] = $utente;
-    echo 'window.location=window.location.origin+"/MyBreakApp/Main"';
+    if($utente->getTipoUtente() === "S")
+    {
+        echo 'window.location=window.location.origin+"/MyBreakApp/Main/Studente"';
+    }
+    else
+    {
+        echo 'window.location=window.location.origin+"/MyBreakApp/Main/Paninara"';
+    }
+    
 ?>

@@ -107,13 +107,13 @@ class Connessione {
         return $ris;
     }
 
-    function aggiungiAmico($idAmico, $mioId) {
-        $sql = "INSERT INTO `ListaAmici`(`IDUtente`, `IDAmico`) VALUES (:idMio , :idAmico), (:idAmico,:idMio)";
+    function aggiungiPanino($idPanino, $idUtente) {
+        $sql = "INSERT INTO `Ordine`(`IDUtente`, `IDPanino`) VALUES (:idutente, :idpanino)";
 
         $stm = $this->connessione->prepare($sql);
 
-        $stm->bindParam(":idMio", $mioId, PDO::PARAM_INT);
-        $stm->bindParam(":idAmico", $idAmico, PDO::PARAM_INT);
+        $stm->bindParam(":idpanino", $idPanino, PDO::PARAM_INT);
+        $stm->bindParam(":idutente", $idUtente, PDO::PARAM_INT);
         
         $esito = $stm->execute();
         return $esito;
