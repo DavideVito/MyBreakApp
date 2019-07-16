@@ -4,7 +4,6 @@ let sedeSelezionata = null;
 let classeSelezionata = 1;
 let carrello = [];
 let panini = [];
-let classi = [];
 
 function ottieniElemento(id) {
     return document.getElementById(id).value;
@@ -193,8 +192,10 @@ function ottieniPanini(idScuola)
         data: {idScuola},
         success: function(data)
         {
+            console.log(data);
             panini = JSON.parse(data);
             let out = document.getElementById("out");
+            console.log(panini);
             for(let i = 0; i < panini.length; i++)
             {
                 let panino = panini[i];
@@ -227,25 +228,21 @@ function ottieniPanini(idScuola)
 
 function aggiungiAlCarrello(panino)
 {
-    console.log(carrello);
     carrello.push(panino);
 }
 
 function compra(idUtente)
 {
+    console.log(carrello);
     let newCarrello = [];
     for(let i = 0; i < carrello.length; i++)
     {
-        let panino = carrello[i];
+        let panino = carrello[i]
         newCarrello.push({id: panino.IDPanino});
-    }
-    if(newCarrello.length === 0)
-    {
-        alert("Hai il carello vuoto");
-        return;
     }
     
     let daMandare = {idUtente: idUtente, panini: newCarrello};
+    
     $.ajax({
         url: window.location.origin + "/MyBreakApp/API/Backend/inserisciPanini.php",
         method: "POST",
@@ -256,7 +253,6 @@ function compra(idUtente)
             {
                 alert("Ciao bellissimo, ma quanto cazzo mangi?");
             }
-            carrello = [];
         }
         
         
@@ -276,9 +272,9 @@ class Classe
         return this.nomeClasse === classe2.nomeClasse;
     }
     
-    addPanino(nome, prezzo, qta, id, idOrdine, idUtente)
+    addPanino(nome, prezzo, qta)
     {
-        this.panini.push({nome, prezzo, qta, id, idOrdine, idUtente});
+        this.panini.push({nome, prezzo, qta});
     }
     
     calcolaNumeroPaniniOrdinati()
@@ -300,7 +296,7 @@ class Classe
         for(let i = 0; i < panini.length; i++)
         {
             let panino = panini[i];
-            prezzo += Number(panino.prezzo) * Number(panino.qta);
+            prezzo += Number(panino.prezzo);
         }
         return prezzo;
     }
@@ -309,9 +305,10 @@ class Classe
 
 function stampaTabellaPaninara(ordine)
 {
-    classi = [];
     let panini = JSON.parse(ordine);
-
+    console.log(panini);
+    
+    let classi = [];
     //COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo
     let matrice = [];
     let indice = 0;
@@ -332,8 +329,9 @@ function stampaTabellaPaninara(ordine)
         {
             classi.push(classe);
         }
-        classe.addPanino(panino.Nome, panino.Prezzo, panino.Qta, panino.IDPanino, panino.IDOrdine, panino.IDUtente);
+        classe.addPanino(panino.Nome, panino.Prezzo, panino.Qta)
     }
+    
     let doveScrivere = document.getElementById("tabellaStampata");
     for(let i = 0; i < classi.length; i++)
     {
@@ -343,28 +341,18 @@ function stampaTabellaPaninara(ordine)
         
         
         let tabella = document.createElement("table");
-        tabella.className = "tabella";
         tabella.border = 2;
         
         
         
-        for(let j = 0; j < classe.panini.length; j++)
+        for(let i = 0; i < classe.panini.length; i++)
         {
-            let panino = classe.panini[j];
-            
-            let pulsante = document.createElement("input");
-            pulsante.type = "button";
-            pulsante.value =`Clicca per inserire 1 panino ${panino.nome}`;
-            pulsante.addEventListener("click", () => { segnaPanino(panino.idOrdine); });
-            
-            
+            let panino = classe.panini[i];
             let riga = document.createElement("tr");
         
             let nomeCella = document.createElement("td");
             let prezzoCella = document.createElement("td");
             let qtaCella = document.createElement("td");
-            let buttonCella = document.createElement("td");
-            buttonCella.appendChild(pulsante);
             
             nomeCella.textContent = panino.nome;
             prezzoCella.textContent = panino.prezzo + "€";
@@ -373,7 +361,6 @@ function stampaTabellaPaninara(ordine)
             riga.appendChild(nomeCella);
             riga.appendChild(prezzoCella);
             riga.appendChild(qtaCella);
-            riga.appendChild(buttonCella);
             
             tabella.appendChild(riga);
         }
@@ -384,47 +371,4 @@ function stampaTabellaPaninara(ordine)
     }
     
     
-}
-
-function segnaPanino(idOrdine)
-{
-    mandaAlServer(idOrdine);
-}
-
-function mandaAlServer(idOrdine)
-{
-    let sedeAndID = document.getElementById("idSedeIdClasse").textContent;
-    
-    sedeAndID = JSON.parse(sedeAndID);
-    
-    let oggettoDaMandare = {
-        idOrdine: idOrdine,
-        sede: sedeAndID.sede,
-        scuola: sedeAndID.scuola
-        
-    };
-    let oggettoAjax = {
-        url: window.location.origin + "/MyBreakApp/API/Backend/decrementaPaninoDatabase.php",
-        method: "POST",
-        data: oggettoDaMandare,
-        success: function(data)
-        {
-            
-            rimuoviTuttiFigliDiUnTag("tabellaStampata");
-            stampaTabellaPaninara(data);
-        }
-        
-        
-    };
-    
-    $.ajax(oggettoAjax);
-    
-}
-
-function rimuoviTuttiFigliDiUnTag(idTag)
-{
-    var tag = document.getElementById(idTag);
-    while (tag.firstChild) {
-        tag.removeChild(tag.firstChild);
-    }
 }

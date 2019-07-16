@@ -21,6 +21,7 @@ and open the template in the editor.
         ?>
     </head>
     <body>
+        <div id="out"></div>
         <header><h1>Benvenuto</h1></center>
         <div id="tabellaStampata"></div>
         <?php 
@@ -35,5 +36,17 @@ and open the template in the editor.
         
         
         
+        
     </body>
+    <div style="opacity: 0" id="idSedeIdClasse">
+        <?php 
+            $arr = array();
+            $arr['sede'] = $sede;
+            $arr['scuola'] = $scuola;
+            echo json_encode($arr);
+        
+        ?>
+        
+        
+    </div>
 </html>

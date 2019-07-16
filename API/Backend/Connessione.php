@@ -120,7 +120,7 @@ class Connessione {
     }
     
     function ottieniPaniniPaninara($idSede, $idScuola) {
-        $sql  = 'select COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo from Ordine inner join Utente using (IDUtente) inner join Classe using (IDClasse) inner join Sede using (IDSede) inner join Scuola using (IDScuola) inner join Panino using (IDPanino) where (Sede.IDSede = :idsede and Scuola.IDScuola = :idscuola) GROUP by IDPanino';
+        $sql  = 'select Panino.IDPanino, COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo, Ordine.IDOrdine, Ordine.IDUtente from Ordine inner join Utente using (IDUtente) inner join Classe using (IDClasse) inner join Sede using (IDSede) inner join Scuola using (IDScuola) inner join Panino using (IDPanino) where (Sede.IDSede = :idsede and Scuola.IDScuola = :idscuola) GROUP by IDPanino, IDClasse';
         $stm = $this->connessione->prepare($sql);
 
         $stm->bindParam(":idsede", $idSede, PDO::PARAM_INT);
@@ -174,6 +174,19 @@ class Connessione {
         return $stm->fetchAll(PDO::FETCH_ASSOC)[0]['IDScuola'];
     }
     
+    function rimuoviOrdine($idOrdine, $idSede, $idScuola)
+    {
+        $sql = "DELETE FROM `Ordine` WHERE `Ordine`.`IDOrdine` = :id";
+        
+        $stm = $this->connessione->prepare($sql);
+
+        $stm->bindParam(":id", $idOrdine, PDO::PARAM_INT);
+
+        $stm->execute();
+        
+        return $this->ottieniPaniniPaninara($idSede, $idScuola);
+        
+    }
     
     
 
