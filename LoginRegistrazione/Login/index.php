@@ -14,9 +14,12 @@ and open the template in the editor.
         <title>Login alla MyBreakApp</title>
     </head>
     <body>
-        <input type="text" name="nome" id="username" value="Lello" />
+        <input type="text" name="nome" id="username" value="LelloPaninara" />
         <input type="text" name="nome" id="password" value="CiaoCia0" />
         <button onclick="login()">Accedi</button>
+        
+        
+        <h3>Se non sei registrato <a href="../Registrazione/">clicca qua</a></h3>
         <div id="out"></div>
         
     </body>

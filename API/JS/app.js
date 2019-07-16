@@ -56,7 +56,7 @@ function registrati() {
 }
 
 function ottieniScuola() {
-    $('#select').find('option').remove().end()
+    $('#select').find('option').remove().end();
     $.ajax({
         url: window.location.origin + "/MyBreakApp/API/Backend/ottieniScuole.php",
         method: "POST",
@@ -257,4 +257,118 @@ function compra(idUtente)
         
         
     });
+}
+
+class Classe
+{
+    constructor(nomeClasse)
+    {
+        this.nomeClasse = nomeClasse;
+        this.panini = [];
+    }
+    
+    uguale = function(classe2)
+    {
+        return this.nomeClasse === classe2.nomeClasse;
+    }
+    
+    addPanino = function(nome, prezzo, qta)
+    {
+        this.panini.push({nome, prezzo, qta});
+    }
+    
+    calcolaNumeroPaniniOrdinati = function()
+    {
+        let numero = 0;
+        let panini = this.panini;
+        for(let i = 0; i < panini.length; i++)
+        {
+            let panino = panini[i];
+            numero += Number(panino.qta);
+        }
+        return numero;
+    }
+    
+    calcolaPrezzoTotale = function()
+    {
+        let prezzo = 0;
+        let panini = this.panini;
+        for(let i = 0; i < panini.length; i++)
+        {
+            let panino = panini[i];
+            prezzo += Number(panino.prezzo);
+        }
+        return prezzo;
+    }
+    
+}
+
+function stampaTabellaPaninara(ordine)
+{
+    let panini = JSON.parse(ordine);
+    console.log(panini);
+    
+    let classi = [];
+    //COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo
+    let matrice = [];
+    let indice = 0;
+    for(let i = 0; i < panini.length; i++)
+    {
+        let find = false;
+        let panino = panini[i];
+        let classe = new Classe(panino.Sezione);
+        for(let j = 0; j < classi.length; j++)
+        {
+            if(classe.uguale(classi[j]))
+            {
+                find = true;
+                classe = classi[j];
+            }
+        }
+        if(!find)
+        {
+            classi.push(classe);
+        }
+        classe.addPanino(panino.Nome, panino.Prezzo, panino.Qta)
+    }
+    
+    let doveScrivere = document.getElementById("tabellaStampata");
+    for(let i = 0; i < classi.length; i++)
+    {
+        let classe = classi[i];
+        let titolo = document.createElement("h5");
+        titolo.textContent = "La classe " + classe.nomeClasse + " ha ordinato " + classe.calcolaNumeroPaniniOrdinati() + " per il costo di " + classe.calcolaPrezzoTotale() + "€";
+        
+        
+        let tabella = document.createElement("table");
+        tabella.border = 2;
+        
+        
+        
+        for(let i = 0; i < classe.panini.length; i++)
+        {
+            let panino = classe.panini[i];
+            let riga = document.createElement("tr");
+        
+            let nomeCella = document.createElement("td");
+            let prezzoCella = document.createElement("td");
+            let qtaCella = document.createElement("td");
+            
+            nomeCella.textContent = panino.nome;
+            prezzoCella.textContent = panino.prezzo + "€";
+            qtaCella.textContent = panino.qta;
+            
+            riga.appendChild(nomeCella);
+            riga.appendChild(prezzoCella);
+            riga.appendChild(qtaCella);
+            
+            tabella.appendChild(riga);
+        }
+        doveScrivere.appendChild(titolo);
+        doveScrivere.appendChild(tabella);
+        
+        
+    }
+    
+    
 }

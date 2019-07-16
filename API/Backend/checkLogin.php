@@ -22,7 +22,8 @@
     $utente = new Utente($esito['Username'], $esito['IDClasse'], $esito['IDUtente'], $esito['TipoUtente'], $idScuola);
     
     $_SESSION['Utente'] = $utente;
-    if($utente->getTipoUtente() === "S")
+    
+    if(strcmp($utente->getTipoUtente(),"S") == 0)
     {
         echo 'window.location=window.location.origin+"/MyBreakApp/Main/Studente"';
     }

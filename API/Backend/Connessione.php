@@ -106,48 +106,29 @@ class Connessione {
         $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
         return $ris;
     }
-
-    function aggiungiPanino($idPanino, $idUtente) {
-        $sql = "INSERT INTO `Ordine`(`IDUtente`, `IDPanino`) VALUES (:idutente, :idpanino)";
-
-        $stm = $this->connessione->prepare($sql);
-
-        $stm->bindParam(":idpanino", $idPanino, PDO::PARAM_INT);
-        $stm->bindParam(":idutente", $idUtente, PDO::PARAM_INT);
-        
-        $esito = $stm->execute();
-        return $esito;
-    }
-
-    function ottieniTuttiGliAmici($idUtenteLoggato) {
-        $sql = 'SELECT Tabella.NomeUtente, Tabella.ID1, Tabella.ID2 FROM ( SELECT u.Nome, u.NomeUtente, u.IDUtente as "ID1", la.IDUtente as "ID2" FROM ListaAmici la INNER JOIN Utenti u on(la.IDAmico = u.IDUtente) )  as Tabella inner join Utenti as Ute on Tabella.ID1 = Ute.IDUtente' .
-                ' where Tabella.ID2 = :idUtente';
+    
+    public function ottieniSede($idUtente) {
+        $sql = "SELECT Sede.IDSede FROM Classe inner join Sede using (IDSede) inner join Utente using (IDClasse) where Utente.IDUtente = :idUtente";
 
         $stm = $this->connessione->prepare($sql);
 
-        $stm->bindParam(":idUtente", $idUtenteLoggato, PDO::PARAM_INT);
+        $stm->bindParam(":idUtente", $idUtente, PDO::PARAM_INT);
 
         $stm->execute();
-        
-        return $stm->fetchAll(PDO::FETCH_ASSOC);
+        $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return $ris;
     }
     
-    
+    function ottieniPaniniPaninara($idSede, $idScuola) {
+        $sql  = 'select COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo from Ordine inner join Utente using (IDUtente) inner join Classe using (IDClasse) inner join Sede using (IDSede) inner join Scuola using (IDScuola) inner join Panino using (IDPanino) where (Sede.IDSede = :idsede and Scuola.IDScuola = :idscuola) GROUP by IDPanino';
+        $stm = $this->connessione->prepare($sql);
 
-    /* Query Prova
-      SELECT Tabella.NomeUtente, Tabella.ID1, Tabella.ID2
-      FROM
-      (
-      SELECT u.Nome, u.NomeUtente, u.IDUtente as "ID1", la.IDUtente as "ID2"
-      FROM ListaAmici la
-      INNER JOIN Utenti u on (la.IDAmico = u.IDUtente)
-      )  as Tabella
+        $stm->bindParam(":idsede", $idSede, PDO::PARAM_INT);
+        $stm->bindParam(":idscuola", $idScuola, PDO::PARAM_INT);
 
-
-      inner join Utenti as Ute on Tabella.ID1 = Ute.IDUtente
-
-      where Tabella.ID2 = 15
-     */
+        $stm->execute();
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function ottieniScuolaDaClasse($idClasse) {
         $sql = "SELECT * from Scuola INNER join Sede using (IDScuola) inner join Classe using (IDSede) inner join Utente using (IDClasse) where Utente.IDClasse = :idClasse";
@@ -162,203 +143,40 @@ class Connessione {
         return $ris[0]['IDScuola'];
     }
 
-    public function getMessaggi($mittente, $destinatario) {
-        $sql = "SELECT * from Messaggi where (Messaggi.IDMittente = :quindici and Messaggi.IDDestinatario = :seidici) or (Messaggi.IDDestinatario = :quindici and Messaggi.IDMittente = :seidici) order by DataMessaggio";
-
-        $stm = $this->connessione->prepare($sql);
-        $stm->bindParam(":quindici", $mittente, PDO::PARAM_INT);
-        $stm->bindParam(":seidici", $destinatario, PDO::PARAM_INT);
-
-        $stm->execute();
-        $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
-        $messaggi = array();
-        for ($i = 0; $i < count($ris); $i++) {
-            $arr = $ris[$i];
-            $contenuto = $arr['Contenuto'];
-            $idMittenteMessaggio = $arr['IDMittente'];
-            
-            if ($idMittenteMessaggio == $mittente) {
-                $contenuto = "i" . $contenuto; //Inviato
-            } else {
-                $contenuto = "r" . $contenuto; //Ricevuto
-            }
-
-            $messaggi[$i]['Contenuto'] = $contenuto;
-            $messaggi[$i]['IDMessaggio'] = $arr['IDMessaggio'];
-        }
-
-        
-        return $messaggi;
-    }
-
-    /*
-     *
-
-
-
-      SELECT IDMessaggio, Contenuto, IDMittente as "Mittente", IDDestinatario as "Destinatario", DataMessaggio FROM Messaggi
-      where Messaggi.visualizzato = false and IDDestinatario = 15
-
-      GROUP BY IDDestinatario, IDMittente
-      ORDER BY DataMessaggio desc
-     */
-
-    function controllaMessaggiPerMeDaLeggere($mioId) {
-        $sql = '
-                SELECT IDMessaggio, Contenuto, IDMittente as "Mittente", IDDestinatario as "Destinatario", DataMessaggio FROM Messaggi	
-                where Messaggi.visualizzato = false and IDDestinatario = :mioID
-                GROUP BY IDDestinatario, IDMittente
-                ORDER BY DataMessaggio desc';
+    function aggiungiPanino($idPanino, $idUtente) {
+        $sql = "INSERT INTO `Ordine`(`IDUtente`, `IDPanino`) VALUES (:idutente, :idpanino)";
 
         $stm = $this->connessione->prepare($sql);
 
-        $stm->bindParam(":mioID", $mioId, PDO::PARAM_INT);
-
-        $stm->execute();
-
-        $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-        $dim = count($ris);
-        $indice = 0;
-        $ret = array();
-        for ($i = 0; $i < $dim; $i++) {
-            $mess = $ris[$i];
-            $contentuto = $mess['Contenuto'];
-            $mandante = $mess['Mittente'];
-            $data = $mess['DataMessaggio'];
-
-
-            $ret[$indice]['Contenuto'] = $contentuto;
-            $ret[$indice]['Mandante'] = $mandante;
-            $ret[$indice]['Data'] = $data;
-            $indice++;
-        }
-
-        
-        return $ret;
-    }
-
-    public function getUsernameById($id) {
-
-        $sql = "Select NomeUtente from Utenti where Utenti.IDUtente = :mioID";
-
-        $stm = $this->connessione->prepare($sql);
-
-        $stm->bindParam(":mioID", $id, PDO::PARAM_INT);
-        $stm->execute();
-
-        $ris = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-        return $ris[0]['NomeUtente'];
-    }
-    
-    public function impostaMessaggiVisualizzati($idMessaggio, $idMit, $idDest)
-    {
-        $sql = "UPDATE Messaggi
-                SET  `Visualizzato` = true 
-                where (Messaggi.IDMittente = :idMit and IDDestinatario = :idDest) ";
-        $stm = $this->connessione->prepare($sql);
-        //$stm->bindParam(":idMess", $idMessaggio, PDO::PARAM_INT);
-        $stm->bindParam(":idMit", $idMit, PDO::PARAM_INT);
-        $stm->bindParam(":idDest", $idDest, PDO::PARAM_INT);
+        $stm->bindParam(":idpanino", $idPanino, PDO::PARAM_INT);
+        $stm->bindParam(":idutente", $idUtente, PDO::PARAM_INT);
         
         $esito = $stm->execute();
-        
         return $esito;
     }
-    
-    public function prendiImmagineDa($nomeUtente)
-    {
-        $sql = "SELECT Immagine from Utenti where Utenti.NomeUtente = :mioNome";
-        
-        $stm = $this->connessione->prepare($sql);
-        
-        $stm->bindParam(":mioNome", $nomeUtente, PDO::PARAM_STR);
-        
-        $stm->execute();
-        
-        return $stm->fetchAll(PDO::FETCH_ASSOC)[0]["Immagine"];
-    }
-    
-    public function ottieniImmagine($idUtente)
-    {
-        $sql = "SELECT Immagine from Utenti where Utenti.IDUtente = :id";
-        
-        $stm = $this->connessione->prepare($sql);
-        
-        $stm->bindParam(":id", $idUtente, PDO::PARAM_INT);
-        
-        $stm->execute();
-        
-        return $stm->fetchAll(PDO::FETCH_ASSOC)[0]['Immagine'];
-    }
-    
-    public function ottieniPassword($idUtente)
-    {
-        $sql = "SELECT Password from Utenti where Utenti.IDUtente = :id";
-        
-        $stm = $this->connessione->prepare($sql);
-        
-        $stm->bindParam(":id", $idUtente, PDO::PARAM_INT);
-        
-        $stm->execute();
-        
-        return $stm->fetchAll(PDO::FETCH_ASSOC)[0]['Password'];
-    }
-    
-    public function cambiaImpostazioni($array, $idUtente)
-    {
-        $sql = 'USE Chat;UPDATE '
-                . '`Utenti`'
-                . ' SET '
-                . ' `Nome` = :myNome,'
-                . ' `Cognome` = :myCognome,'
-                . ' `NomeUtente` = :myNomeUtente,'
-                . ' `Password` = :myPassword,'
-                . ' `Email` = :myEmail,'
-                . ' `NumeroDiTelefono` = :myNumero'
-                . ' WHERE Utenti.IDUtente = :myId';
-        
-        $nome = $array['Nome'];
-        $cognome = $array['Cognome'];
-        $user = $array['NomeUtente'];
-        $email = $array['Email'];
-        $password = $array['Password'];
-        $numero  = $array['NumeroDiTelefono'];
 
-        //Se la password che ho come parametro è diversa dalla password che ho nel database allora calcola l'hash sulla nuova password
-        if(strcmp($password, $this->ottieniPassword($idUtente)) != 0)
-        {
-            $password = hash("sha512", $password);
-        }
-        
-        foreach ($array as $key => $value) {
-            echo "Tipo di $key " . gettype($value) . "<br>";
-        }
-        
-        echo "Tipo di idUtente " . gettype($idUtente) . " <br>";
-        $idUtente = intval($idUtente);
-        echo "Tipo di idUtente " . gettype($idUtente) . " <br>";
-        $stm = $this->connessione->prepare($sql);
-        
-        $stm->bindParam(":myNome", $nome, PDO::PARAM_STR);
-        $stm->bindParam(":myCognome", $cognome, PDO::PARAM_STR);
-        $stm->bindParam(":myNomeUtente", $user, PDO::PARAM_STR);
-        $stm->bindParam(":myPassword", $password, PDO::PARAM_STR);
-        $stm->bindParam(":myEmail", $email, PDO::PARAM_STR);
-        $stm->bindParam(":myNumero", $numero, PDO::PARAM_STR);
-        $stm->bindParam(":myId", $idUtente, PDO::PARAM_INT);
-        echo "Query String: " . $stm->queryString . "<br>";
-        return $stm->execute();
-        
-        
+    function getScuola($idClasse)
+    {
+        $sql  = "SELECT * FROM Scuola\n"
 
+                . "inner join Sede using (IDScuola)\n"
+
+                . "inner JOIN Classe USING (IDSede)\n"
+
+                . "where Classe.IDClasse = :idclasse";
         
+        $stm = $this->connessione->prepare($sql);
+
+        $stm->bindParam(":idclasse", $idClasse, PDO::PARAM_INT);
+
+        $stm->execute();
         
-        
-        
-        
-        
+        return $stm->fetchAll(PDO::FETCH_ASSOC)[0]['IDScuola'];
     }
+    
+    
+    
+
+    
 
 }
