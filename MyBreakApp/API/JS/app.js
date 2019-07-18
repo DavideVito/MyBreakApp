@@ -306,11 +306,10 @@ class Classe
 
 function stampaTabellaPaninara(ordine)
 {
-    let panini = JSON.parse(ordine);
-    console.log(panini);
+    classi = [];
+    document.getElementById("out").innerHTML = ordine;
     
     let classi = [];
-    //COUNT(*) as Qta, Classe.Sezione, Panino.Nome, Panino.Prezzo
     let matrice = [];
     let indice = 0;
     for(let i = 0; i < panini.length; i++)
