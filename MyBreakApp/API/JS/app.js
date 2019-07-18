@@ -231,6 +231,7 @@ function aggiungiAlCarrello(panino)
     carrello.push(panino);
 }
 
+
 function compra(idUtente)
 {
     console.log(carrello);
@@ -371,4 +372,12 @@ function stampaTabellaPaninara(ordine)
     }
     
     
+}
+
+
+function parsaScuolaSedeClasse()
+{
+    let dom = document.getElementById("out").textContent;
+    let ogg = JSON.parse(dom);
+    console.log(ogg);
 }

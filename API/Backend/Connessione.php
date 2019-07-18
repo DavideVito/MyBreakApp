@@ -188,6 +188,12 @@ class Connessione {
         
     }
     
+    function ottieniScuolaSedeClassi()
+    {
+        $scuole = $this->getScuole();
+        return json_encode($scuole);
+    }
+    
     
 
     

@@ -17,7 +17,53 @@ and open the template in the editor.
         <input type="text" name="nome" id="username" value="LelloPaninara" />
         <input type="text" name="nome" id="password" value="CiaoCia0" />
         <button onclick="login()">Accedi</button>
-        
+        <p><h3>Di seguito ci sono tutti i profili per accedere</h3></p>
+        <ul>
+            <li>
+                <ul>
+                    <li>Userame: Lello</li>
+                    <li>Password: CiaoCia0</li>
+                </ul>
+            </li>
+            <br>
+            <li>
+                <ul>
+                    <li>Userame: Lello2</li>
+                    <li>Password: CiaoCia0</li>
+                </ul>
+            </li>
+            <br>
+            <li>
+                <ul>
+                    <li>Userame: Lello3</li>
+                    <li>Password: CiaoCia0</li>
+                </ul>
+            </li>
+            Questi utenti appartengono alla classe
+            <br>
+            <li>
+                <ul>
+                    <li>Userame: LelloPaninara</li>
+                    <li>Password: CiaoCia0</li>
+                </ul>
+            </li>
+            <br>
+            <li>
+                <ul>
+                    <li>Userame: PaninaraCentrale</li>
+                    <li>Password: CiaoCia0</li>
+                </ul>
+            </li>
+            <br>
+            
+            
+            
+            
+            
+            
+            
+            
+        </ul>
         
         <h3>Se non sei registrato <a href="../Registrazione/">clicca qua</a></h3>
         <div id="out"></div>
