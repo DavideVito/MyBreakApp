@@ -17,9 +17,11 @@ and open the template in the editor.
         <?php 
         require_once '../../API/JS/OttieniJQuery.php';
         require_once '../../API/JS/OttieniMain.php';
+        require_once '../../API/CSS/ottieniBootstrap.php';
+        require_once '../../API/CSS/ottieniStilleCss.php';
+
         
         ?>
-        <link rel="stylesheet" href="">
     </head>
     <body>
         <div id="out"></div>

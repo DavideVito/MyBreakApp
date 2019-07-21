@@ -10,13 +10,21 @@ and open the template in the editor.
         <?php 
             require_once '../../API/JS/OttieniJQuery.php';
             require_once '../../API/JS/OttieniMain.php';
+            require_once '../../API/CSS/ottieniBootstrap.php';
+            require_once '../../API/CSS/ottieniStilleCss.php';
+            
+            
         ?> 
         <title>Login alla MyBreakApp</title>
     </head>
     <body>
-        <input type="text" name="nome" id="username" value="LelloPaninara" />
-        <input type="text" name="nome" id="password" value="CiaoCia0" />
-        <button onclick="login()">Accedi</button>
+        <div class="form-group">
+            <input class="form-control" type="text" name="nome" id="username" value="LelloPaninara" />
+            <input class="form-control" type="text" name="nome" id="password" value="CiaoCia0" />
+            <button class="btn btn-primary" onclick="login()">Accedi</button>
+        </div>
+
+        
         <p><h3>Di seguito ci sono tutti i profili per accedere</h3></p>
         <ul>
             <li>
