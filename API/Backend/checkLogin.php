@@ -12,7 +12,7 @@
     
     if(count($esito) == 0)
     {
-        echo "alert('Yo hai missato qualcosa)'";
+        echo "alert('Username o password errati, riprova')";
         die();
     }
     $esito = $esito[0];

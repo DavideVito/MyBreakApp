@@ -15,6 +15,14 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <title></title>
         <?php 
+        
+        if(!isset($_SESSION['utente']))
+        {
+            echo '<script> window.location = "https://'. $_SERVER['HTTP_HOST'] . '/MyBreakApp"  </script>';
+        }
+        $utente = $_SESSION['Utente'];
+        
+        
         require_once '../../API/JS/OttieniJQuery.php';
         require_once '../../API/JS/OttieniMain.php';
         
