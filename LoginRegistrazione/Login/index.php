@@ -1,13 +1,25 @@
+<?php
+require_once '../../API/Classi/Utente.php';
+session_start();
+if(isset($_SESSION['Utente']))
+{
+    $utente = $_SESSION['Utente'];
+    $tipoStudente = ($utente->getTipoUtente() == "S") ? "Studente" : "Paninara";
+    $protocollo = "http";
+    if(isset($_SERVER["HTTP_CF_VISITOR"]))
+    {
+        $protocollo = json_decode($_SERVER["HTTP_CF_VISITOR"])->scheme;
+    }
+    $link = $protocollo . "://". $_SERVER['HTTP_HOST'] . "/MyBreakApp/Main/".$tipoStudente;
+    echo "<script>window.location = '" .  $link . "';</script>'";
+    die();
+}
+?>
+
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
-        <meta charset="UTF-8">
-        <?php 
+    <?php 
             require_once '../../API/JS/OttieniJQuery.php';
             require_once '../../API/JS/OttieniMain.php';
             require_once '../../API/CSS/ottieniBootstrap.php';
@@ -15,66 +27,47 @@ and open the template in the editor.
             
             
         ?> 
-        <title>Login alla MyBreakApp</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>Accedi alla MyBreakApp</title>
+        <style>
+            
+            form
+            {
+                margin-top: 20px;
+                max-width: 200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            input[type = "submit"]
+            {
+                cursor: pointer
+            }
+            
+            .Registrati
+            {
+                margin-top: 50px;
+                margin-bottom: 50px;
+                
+                text-align: center;
+                margin-right: auto;
+                margin-right: auto;
+                font-size: 20pt;
+            }
+        </style>        
     </head>
     <body>
-        <div class="form-group">
-            <input class="form-control" type="text" name="nome" id="username" value="LelloPaninara" />
-            <input class="form-control" type="text" name="nome" id="password" value="CiaoCia0" />
-            <button class="btn btn-primary" onclick="login()">Accedi</button>
-        </div>
-
-        
-        <p><h3>Di seguito ci sono tutti i profili per accedere</h3></p>
-        <ul>
-            <li>
-                <ul>
-                    <li>Userame: Lello</li>
-                    <li>Password: CiaoCia0</li>
-                </ul>
-            </li>
-            <br>
-            <li>
-                <ul>
-                    <li>Userame: Lello2</li>
-                    <li>Password: CiaoCia0</li>
-                </ul>
-            </li>
-            <br>
-            <li>
-                <ul>
-                    <li>Userame: Lello3</li>
-                    <li>Password: CiaoCia0</li>
-                </ul>
-            </li>
-            Questi utenti appartengono alla classe
-            <br>
-            <li>
-                <ul>
-                    <li>Userame: LelloPaninara</li>
-                    <li>Password: CiaoCia0</li>
-                </ul>
-            </li>
-            <br>
-            <li>
-                <ul>
-                    <li>Userame: PaninaraCentrale</li>
-                    <li>Password: CiaoCia0</li>
-                </ul>
-            </li>
-            <br>
-            
-            
-            
-            
-            
-            
-            
-            
-        </ul>
-        
-        <h3>Se non sei registrato <a href="../Registrazione/">clicca qua</a></h3>
-        <div id="out"></div>
-        
+        <form>
+            <div class="form-group">
+                <input class="form-control" id="username" type="text" name="username" value="" placeholder="Nome utente"/>
+            </div>
+            <div class="form-group">
+            <input class="form-control" id="password" type="password" name="password" value="" placeholder="Password"/>
+            </div>
+            <input class="form-control btn-btn btn-primary" type="button" value="Accedi" onclick="login()" name="Accedi"/>
+        </form>
+    
+        <div class="Registrati"> Se non hai un account: <a href="../Registrazione/"> Registrati </a></div>
     </body>
 </html>

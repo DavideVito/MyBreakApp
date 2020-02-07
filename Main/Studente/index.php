@@ -8,14 +8,20 @@ session_start();
 <html>
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        
         
         <?php 
-        if(!isset($_SESSION['utente']))
+
+        if(!isset($_SESSION['Utente']))
         {
-            echo '<script> window.location = "https://'. $_SERVER['HTTP_HOST'] . '/MyBreakApp"  </script>';
+            $tmp = json_decode($_SERVER["HTTP_CF_VISITOR"]) | "http";
+            $tmp2 = $tmp->scheme . "://". $_SERVER['HTTP_HOST'] . "/MyBreakApp/";
+            echo "<script>window.location = '" .  $tmp2 . "';</script>'";
+             die();
         }
         $utente = $_SESSION['Utente'];
+
+        echo "<title>Benvenuto" . $utente->getUsername() . "</title>";
         
         require_once '../../API/JS/OttieniJQuery.php';
         require_once '../../API/JS/OttieniMain.php';
@@ -39,7 +45,7 @@ session_start();
         *{
             font-family: "San Francisco"   
         }
-        #bottoneCompra
+        #bottoneCompra, #bottoneEsci
         {
             background-color: black;
             color: white;
@@ -51,6 +57,7 @@ session_start();
     </head>
     <body>
     <center>
+        <button id="bottoneEsci" onclick="logOut()" style="width: 500px; height: 100px;">logout  <?php echo $utente->getUsername() ?></button>
         <header><h1>Bentoranto <?php echo $utente->getUsername()?></h1></header>
         <img src="https://static.thenounproject.com/png/16757-200.png" width="50" height="50" id="carrello">
         <div id="showCarrello" style="height: 0px; background-color: black"></div>

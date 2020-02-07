@@ -1,4 +1,3 @@
-
 let scuolaSelezionata = null;
 let sedeSelezionata = null;
 let classeSelezionata = 1;
@@ -108,11 +107,9 @@ function ottieniSede(scuola) {
         let sede = sedi[i];
 
         let optionTag = document.createElement("option");
-        if (sede.classi[0].length !== 0)
-        {
+        if (sede.classi[0].length !== 0) {
             optionTag.value = sede.classi[0][0].IDSede;
-        } else
-        {
+        } else {
             continue;
         }
         optionTag.innerHTML = `${sede.nomeSede}`;
@@ -173,18 +170,17 @@ function selezionaClasse(classi) {
     document.getElementById("classi").appendChild(selectTag);
 }
 
-function ottieniPanini(idScuola)
-{
+function ottieniPanini(idScuola) {
     $.ajax({
         url: window.location.origin + "/MyBreakApp/API/Backend/ottieniPanini.php",
         method: "POST",
-        data: {idScuola},
-        success: function (data)
-        {
+        data: {
+            idScuola
+        },
+        success: function (data) {
             panini = JSON.parse(data);
             let out = document.getElementById("out");
-            for (let i = 0; i < panini.length; i++)
-            {
+            for (let i = 0; i < panini.length; i++) {
                 let panino = panini[i];
                 let divPanino = document.createElement("div");
 
@@ -198,19 +194,25 @@ function ottieniPanini(idScuola)
                 paragrafo.style.padding = -20;
                 tagImmagine.addEventListener("click", () => {
 
-                    $(paragrafo).animate({opacity: 0}, 400, null, () =>
-                    {
+                    $(paragrafo).animate({
+                        opacity: 0
+                    }, 400, null, () => {
                         $(paragrafo).text("Panino aggiunto");
-                        $(paragrafo).animate({opacity: 1}, 400);
+                        $(paragrafo).animate({
+                            opacity: 1
+                        }, 400);
 
                     });
 
                     setTimeout(() => {
 
-                        $(paragrafo).animate({opacity: 0}, 400, null, () =>
-                        {
+                        $(paragrafo).animate({
+                            opacity: 0
+                        }, 400, null, () => {
                             $(paragrafo).text("Clicca per comprare questo panino al costo di: " + panino.Prezzo + "€");
-                            $(paragrafo).animate({opacity: 1}, 400);
+                            $(paragrafo).animate({
+                                opacity: 1
+                            }, 400);
                         });
 
 
@@ -228,8 +230,12 @@ function ottieniPanini(idScuola)
 
                 let tagNome = document.createElement("p");
                 tagNome.textContent = panino.Nome;
-                $(tagNome).css({fontSize: 25});
-                $(tagNome).css({color: "#212F3C"});
+                $(tagNome).css({
+                    fontSize: 25
+                });
+                $(tagNome).css({
+                    color: "#212F3C"
+                });
 
 
                 divPanino.appendChild(tagNome);
@@ -244,31 +250,31 @@ function ottieniPanini(idScuola)
     });
 }
 
-function aggiungiAlCarrello(panino)
-{
+function aggiungiAlCarrello(panino) {
     carrello.push(panino);
 }
 
 
-function compra(idUtente)
-{
+function compra(idUtente) {
     let newCarrello = [];
-    for (let i = 0; i < carrello.length; i++)
-    {
+    for (let i = 0; i < carrello.length; i++) {
         let panino = carrello[i]
-        newCarrello.push({id: panino.IDPanino});
+        newCarrello.push({
+            id: panino.IDPanino
+        });
     }
 
-    let daMandare = {idUtente: idUtente, panini: newCarrello};
+    let daMandare = {
+        idUtente: idUtente,
+        panini: newCarrello
+    };
     debugger;
     $.ajax({
         url: window.location.origin + "/MyBreakApp/API/Backend/inserisciPanini.php",
         method: "POST",
         data: daMandare,
-        success: function (data)
-        {
-            if (data === "tappofrat")
-            {
+        success: function (data) {
+            if (data === "tappofrat") {
                 alert("Ciao bellissimo, ma quanto cazzo mangi?");
             }
             carrello = [];
@@ -276,42 +282,41 @@ function compra(idUtente)
     });
 }
 
-class Classe
-{
-    constructor(nomeClasse)
-    {
+class Classe {
+    constructor(nomeClasse) {
         this.nomeClasse = nomeClasse;
         this.panini = [];
     }
 
-    uguale(classe2)
-    {
+    uguale(classe2) {
         return this.nomeClasse === classe2.nomeClasse;
     }
 
-    addPanino(nome, prezzo, qta, id, idOrdine, idUtente)
-    {
-        this.panini.push({nome, prezzo, qta, id, idOrdine, idUtente});
+    addPanino(nome, prezzo, qta, id, idOrdine, idUtente) {
+        this.panini.push({
+            nome,
+            prezzo,
+            qta,
+            id,
+            idOrdine,
+            idUtente
+        });
     }
 
-    calcolaNumeroPaniniOrdinati()
-    {
+    calcolaNumeroPaniniOrdinati() {
         let numero = 0;
         let panini = this.panini;
-        for (let i = 0; i < panini.length; i++)
-        {
+        for (let i = 0; i < panini.length; i++) {
             let panino = panini[i];
             numero += Number(panino.qta);
         }
         return numero;
     }
 
-    calcolaPrezzoTotale()
-    {
+    calcolaPrezzoTotale() {
         let prezzo = 0;
         let panini = this.panini;
-        for (let i = 0; i < panini.length; i++)
-        {
+        for (let i = 0; i < panini.length; i++) {
             let panino = panini[i];
             prezzo += Number(panino.prezzo) * Number(panino.qta);
         }
@@ -320,35 +325,29 @@ class Classe
 
 }
 
-function stampaTabellaPaninara(ordine)
-{
+function stampaTabellaPaninara(ordine) {
     classi = [];
     let panini = JSON.parse(ordine);
 
     let matrice = [];
     let indice = 0;
-    for (let i = 0; i < panini.length; i++)
-    {
+    for (let i = 0; i < panini.length; i++) {
         let find = false;
         let panino = panini[i];
         let classe = new Classe(panino.Sezione);
-        for (let j = 0; j < classi.length; j++)
-        {
-            if (classe.uguale(classi[j]))
-            {
+        for (let j = 0; j < classi.length; j++) {
+            if (classe.uguale(classi[j])) {
                 find = true;
                 classe = classi[j];
             }
         }
-        if (!find)
-        {
+        if (!find) {
             classi.push(classe);
         }
         classe.addPanino(panino.Nome, panino.Prezzo, panino.Qta, panino.IDPanino, panino.IDOrdine, panino.IDUtente);
     }
     let doveScrivere = document.getElementById("tabellaStampata");
-    for (let i = 0; i < classi.length; i++)
-    {
+    for (let i = 0; i < classi.length; i++) {
         let classe = classi[i];
         let titolo = document.createElement("h5");
         titolo.textContent = "La classe " + classe.nomeClasse + " ha ordinato " + classe.calcolaNumeroPaniniOrdinati() + " per il costo di " + classe.calcolaPrezzoTotale() + "€";
@@ -359,8 +358,7 @@ function stampaTabellaPaninara(ordine)
         tabella.border = 2;
 
 
-        for (let j = 0; j < classe.panini.length; j++)
-        {
+        for (let j = 0; j < classe.panini.length; j++) {
             let panino = classe.panini[j];
 
             let pulsante = document.createElement("input");
@@ -395,13 +393,11 @@ function stampaTabellaPaninara(ordine)
     }
 }
 
-function segnaPanino(idOrdine)
-{
+function segnaPanino(idOrdine) {
     mandaAlServer(idOrdine);
 }
 
-function mandaAlServer(idOrdine)
-{
+function mandaAlServer(idOrdine) {
     let sedeAndID = document.getElementById("idSedeIdClasse").textContent;
 
     sedeAndID = JSON.parse(sedeAndID);
@@ -418,8 +414,7 @@ function mandaAlServer(idOrdine)
         url: window.location.origin + "/MyBreakApp/API/Backend/decrementaPaninoDatabase.php",
         method: "POST",
         data: oggettoDaMandare,
-        success: function (data)
-        {
+        success: function (data) {
 
             rimuoviTuttiFigliDiUnTag("tabellaStampata");
             stampaTabellaPaninara(data);
@@ -429,36 +424,38 @@ function mandaAlServer(idOrdine)
     };
 
     $.ajax(oggettoAjax);
-
 }
 
-class Scuola
-{
-    constructor(nomeScuola)
-    {
+function logOut() {
+    $.ajax({
+        url: window.location.origin + "/MyBreakApp/API/Backend/logOut.php",
+        method: "GET",
+        success: function (data) {
+            ;
+            window.location = window.location.origin + "/MyBreakApp";
+        }
+    })
+}
+
+class Scuola {
+    constructor(nomeScuola) {
         this.nomeScuola = nomeScuola;
         this.sedi = [];
     }
 
-    aggiungiSede(sedeOggetto)
-    {
+    aggiungiSede(sedeOggetto) {
         this.sedi.push(sedeOggetto);
     }
 
-    static ottieniScuolaDaId(id)
-    {
-        for (let i = 0; i < scuole.length; i++)
-        {
+    static ottieniScuolaDaId(id) {
+        for (let i = 0; i < scuole.length; i++) {
             let scuola = scuole[i];
-            for (let j = 0; j < scuola.sedi.length; j++)
-            {
+            for (let j = 0; j < scuola.sedi.length; j++) {
                 let sede = scuola.sedi[j];
                 let classi = sede.classi[0];
-                for (let k = 0; k < classi.length; k++)
-                {
+                for (let k = 0; k < classi.length; k++) {
                     let classe = classi[k];
-                    if (classe.IDScuola === id)
-                    {
+                    if (classe.IDScuola === id) {
                         return scuola;
                     }
 
@@ -468,31 +465,24 @@ class Scuola
     }
 }
 
-class Sede
-{
-    constructor(nomeSede)
-    {
+class Sede {
+    constructor(nomeSede) {
         this.nomeSede = nomeSede;
         this.classi = new Array();
 
     }
 
-    aggiungiClasse(classe)
-    {
+    aggiungiClasse(classe) {
         this.classi.push(classe);
     }
 
-    static ottieniSedeDaId(id)
-    {
-        for (let j = 0; j < sedi.length; j++)
-        {
+    static ottieniSedeDaId(id) {
+        for (let j = 0; j < sedi.length; j++) {
             let sede = sedi[j];
             let classi = sede.classi[0];
-            for (let k = 0; k < classi.length; k++)
-            {
+            for (let k = 0; k < classi.length; k++) {
                 let classe = classi[k];
-                if (classe.IDSede === id)
-                {
+                if (classe.IDSede === id) {
                     return sede;
                 }
 
@@ -501,20 +491,16 @@ class Sede
     }
 }
 
-function parsaScuolaSedeClasse()
-{
+function parsaScuolaSedeClasse() {
     let dom = document.getElementById("jsonDb").textContent;
     let ogg = JSON.parse(dom);
     scuole = [];
 
-    for (let scuolaProp in ogg)
-    {
-        if (ogg.hasOwnProperty(scuolaProp))
-        {
+    for (let scuolaProp in ogg) {
+        if (ogg.hasOwnProperty(scuolaProp)) {
             let scuola = new Scuola(scuolaProp);
 
-            for (let sediProp in ogg[scuolaProp])
-            {
+            for (let sediProp in ogg[scuolaProp]) {
                 let sede = new Sede(sediProp);
                 sede.aggiungiClasse(ogg[scuolaProp][sediProp]);
                 scuola.aggiungiSede(sede);
@@ -530,17 +516,14 @@ function parsaScuolaSedeClasse()
     //optionTagTmp.innerHTML = "fjoejfoe";
     //selectScuola.appendChild(optionTagTmp);
 
-    for (let i = 0; i < scuole.length; i++)
-    {
+    for (let i = 0; i < scuole.length; i++) {
         let scuola = scuole[i];
         let optionTag = document.createElement("option");
 
 
-        if (scuola.sedi[0].classi[0].length !== 0)
-        {
+        if (scuola.sedi[0].classi[0].length !== 0) {
             optionTag.value = scuola.sedi[0].classi[0][0].IDScuola;
-        } else
-        {
+        } else {
             continue;
         }
         optionTag.innerHTML = `${scuola.nomeScuola} della citta di ${scuola.sedi[0].classi[0][0].Citta}`;
@@ -572,14 +555,12 @@ function parsaScuolaSedeClasse()
 
 
 
-function stampaScuole()
-{
+function stampaScuole() {
     parsaScuolaSedeClasse();
     document.body.write(JSON.stringify(scuolaSelezionata));
 }
 
-function rimuoviTuttiFigliDiUnTag(idTag)
-{
+function rimuoviTuttiFigliDiUnTag(idTag) {
     var tag = document.getElementById(idTag);
     while (tag.firstChild) {
         tag.removeChild(tag.firstChild);

@@ -16,12 +16,7 @@ and open the template in the editor.
         <title></title>
         <?php 
         
-        if(!isset($_SESSION['utente']))
-        {
-            echo '<script> window.location = "https://'. $_SERVER['HTTP_HOST'] . '/MyBreakApp"  </script>';
-        }
         $utente = $_SESSION['Utente'];
-        
         
         require_once '../../API/JS/OttieniJQuery.php';
         require_once '../../API/JS/OttieniMain.php';
@@ -42,11 +37,8 @@ and open the template in the editor.
                 $esito = $connessione->ottieniPaniniPaninara($sede, $scuola);
                 echo "<script>stampaTabellaPaninara('". json_encode($esito) ."')</script>";
         ?>
-        
-        
-        
-        
-    </body>
+    
+        </body>
     <div style="opacity: 0" id="idSedeIdClasse">
         <?php 
             $arr = array();

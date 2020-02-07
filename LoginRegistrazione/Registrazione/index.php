@@ -28,6 +28,7 @@ and open the template in the editor.
         <div id="out"></div>
         <div id="jsonDb" style="opacity: 0">
             <?php require_once '../../API/Backend/Connessione.php';
+
                 $sito = $_SERVER['HTTP_HOST'] . "/MyBreakApp/API/Backend/ottieniScuole.php";
                 //var_dump();
                 $esito = file_get_contents("https://" . $_SERVER['HTTP_HOST'] . "/MyBreakApp/API/Backend/ottieniScuole.php");
